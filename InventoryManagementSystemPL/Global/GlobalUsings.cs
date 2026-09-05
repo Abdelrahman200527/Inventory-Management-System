@@ -1,0 +1,11 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+//global using InventoryManagementSystemBLL.ModelVM;
+//global using InventoryManagementSystemBLL.Service;
+global using InventoryManagementSystemDAL.Entity;
+global using InventoryManagementSystemDAL.Repo;
+global using InventoryManagementSystemDAL.DBContext;

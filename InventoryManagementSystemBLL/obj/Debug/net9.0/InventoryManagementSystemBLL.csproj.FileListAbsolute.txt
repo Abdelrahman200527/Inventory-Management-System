@@ -1,0 +1,15 @@
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\bin\Debug\net9.0\InventoryManagementSystemBLL.deps.json
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\bin\Debug\net9.0\InventoryManagementSystemBLL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\bin\Debug\net9.0\InventoryManagementSystemBLL.pdb
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\bin\Debug\net9.0\InventoryManagementSystemDAL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\bin\Debug\net9.0\InventoryManagementSystemDAL.pdb
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.csproj.AssemblyReference.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.AssemblyInfoInputs.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.AssemblyInfo.cs
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.csproj.CoreCompileInputs.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\Inventor.84D86548.Up2Date
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\refint\InventoryManagementSystemBLL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\InventoryManagementSystemBLL.pdb
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemBLL\obj\Debug\net9.0\ref\InventoryManagementSystemBLL.dll

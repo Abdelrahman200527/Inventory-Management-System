@@ -1,0 +1,14 @@
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\bin\Debug\net9.0\InventoryManagementSystemDAL.deps.json
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\bin\Debug\net9.0\InventoryManagementSystemDAL.runtimeconfig.json
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\bin\Debug\net9.0\InventoryManagementSystemDAL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\bin\Debug\net9.0\InventoryManagementSystemDAL.pdb
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.csproj.AssemblyReference.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.AssemblyInfoInputs.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.AssemblyInfo.cs
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.csproj.CoreCompileInputs.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\refint\InventoryManagementSystemDAL.dll
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.pdb
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\InventoryManagementSystemDAL.genruntimeconfig.cache
+D:\ITI .Net S.T\Project Req\VS Projects\InventoryManagementSystem\InventoryManagementSystemDAL\obj\Debug\net9.0\ref\InventoryManagementSystemDAL.dll
