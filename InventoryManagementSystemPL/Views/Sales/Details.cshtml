@@ -1,0 +1,121 @@
+@model SaleResponseDto
+@{
+    ViewData["Title"] = "تفاصيل فاتورة بيع";
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div>
+                <h1 class="page-title">فاتورة بيع #@Model.Id</h1>
+                <p class="page-subtitle">
+                    <i class="fa-regular fa-calendar"></i>
+                    @Model.SaleDate.ToString("yyyy-MM-dd HH:mm")
+                </p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> طباعة
+            </button>
+            <a asp-action="Index" class="btn btn-light">
+                <i class="fa-solid fa-arrow-right"></i> العودة
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Invoice Info -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6" data-aos="fade-up">
+        <div class="mini-stat">
+            <div class="stat-icon stat-info">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+                <small class="text-muted d-block">العميل</small>
+                @if (string.IsNullOrEmpty(Model.CustomerInfo))
+                {
+                    <strong class="text-muted">عميل نقدي</strong>
+                }
+                else
+                {
+                    <strong>@Model.CustomerInfo</strong>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="mini-stat">
+            <div class="stat-icon stat-success">
+                <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div>
+                <small class="text-muted d-block">إجمالي الفاتورة</small>
+                <strong style="font-size: 1.3rem; color: var(--success);">
+                    @Model.TotalAmount.ToString("N2") ج.م
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Items Table -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="200">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-boxes-stacked" style="color: var(--success);"></i> أصناف الفاتورة</h5>
+        <span class="table-badge">@Model.Items.Count صنف</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>سعر البيع</th>
+                    <th>الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td style="font-weight: 600;">@item.ProductName</td>
+                            <td>
+                                <span class="badge-soft badge-soft-success">
+                                    @item.Quantity وحدة
+                                </span>
+                            </td>
+                            <td>@item.UnitPrice.ToString("N2") ج.م</td>
+                            <td>
+                                <strong style="color: var(--success);">
+                                    @item.LineTotal.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <h5>لا توجد أصناف</h5>
+                                <p>هذه الفاتورة فارغة</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+@model SupplierResponseDto
+@{
+    ViewData["Title"] = "تفاصيل المورد";
+    var purchases = ViewBag.Purchases as List<PurchaseResponseDto> ?? new List<PurchaseResponseDto>();
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--info), #4299e1); box-shadow: 0 8px 20px rgba(44, 82, 130, 0.3);">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تفاصيل المورد</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-truck"></i>
+                    @Model.SupplierName
+                </p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="fa-solid fa-pen"></i> تعديل
+            </a>
+            <a asp-action="Index" class="btn btn-light">
+                <i class="fa-solid fa-arrow-right"></i> العودة
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Supplier Info -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3" data-aos="fade-up" data-aos-delay="0">
+        <div class="mini-stat">
+            <div class="stat-icon stat-success">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+            <div>
+                <small class="text-muted d-block">الهاتف</small>
+                <strong>@Model.Phone</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="mini-stat">
+            <div class="stat-icon stat-info">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div style="overflow: hidden;">
+                <small class="text-muted d-block">البريد الإلكتروني</small>
+                <strong style="font-size: 0.85rem;">@Model.Email</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="mini-stat">
+            <div class="stat-icon stat-gold">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div>
+                <small class="text-muted d-block">المسؤول</small>
+                <strong>@(Model.ContactName ?? "-")</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="mini-stat">
+            <div class="stat-icon stat-primary">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+                <small class="text-muted d-block">العنوان</small>
+                <strong>@(Model.Address ?? "-")</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Purchases History -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="400">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-clock-rotate-left" style="color: var(--info);"></i> سجل المشتريات من هذا المورد</h5>
+        <span class="table-badge">@purchases.Count فاتورة</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>رقم الفاتورة</th>
+                    <th>التاريخ</th>
+                    <th>إجمالي المبلغ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (purchases.Any())
+                {
+                    @foreach (var p in purchases)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-soft badge-soft-info">
+                                    <i class="fa-solid fa-hashtag"></i> @p.Id
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="fa-regular fa-calendar me-1"></i>
+                                    @p.PurchaseDate.ToString("yyyy-MM-dd")
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    @p.TotalAmount.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <h5>لا يوجد مشتريات</h5>
+                                <p>لم يتم تسجيل أي فواتير شراء من هذا المورد بعد</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

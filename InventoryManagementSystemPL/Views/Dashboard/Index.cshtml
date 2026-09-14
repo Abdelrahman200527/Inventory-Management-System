@@ -1,0 +1,286 @@
+@model DashboardSummaryDto
+@{
+    ViewData["Title"] = "لوحة التحكم";
+    var recentActivities = Model.RecentActivity ?? new List<RecentActivityDto>();
+    var mostSold = Model.MostSoldProducts ?? new List<MostSoldProductDto>();
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon">
+                <i class="fa-solid fa-gauge-high"></i>
+            </div>
+            <div>
+                <h1 class="page-title">لوحة التحكم</h1>
+                <p class="page-subtitle">
+                    <span>مرحباً بك 👋</span>
+                    <span class="text-muted">•</span>
+                    <span>@DateTime.Now.ToString("dddd، dd MMMM yyyy", new System.Globalization.CultureInfo("ar-EG"))</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card stat-primary">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-arrow-up"></i> +5
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المنتجات</p>
+            <h3 class="stat-value">@Model.TotalProducts</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card stat-success">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-success">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-check"></i> متوفر
+                </span>
+            </div>
+            <p class="stat-label">إجمالي كمية المخزون</p>
+            <h3 class="stat-value">@Model.TotalStockQuantity</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card stat-danger">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <span class="stat-trend down">
+                    <i class="fa-solid fa-exclamation"></i> تنبيه
+                </span>
+            </div>
+            <p class="stat-label">تنبيهات نقص المخزون</p>
+            <h3 class="stat-value">@Model.LowStockProductsCount</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card stat-gold">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-gold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-arrow-up"></i> +12%
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المبيعات</p>
+            <h3 class="stat-value">@Model.TotalSalesAmount.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div>
+                    <h5><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> المبيعات مقابل المشتريات</h5>
+                    <small>مقارنة الأداء المالي</small>
+                </div>
+            </div>
+            <canvas id="financeChart" height="110"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <div>
+                    <h5><i class="fa-solid fa-fire" style="color: var(--warning);"></i> الأكثر مبيعاً</h5>
+                    <small>أعلى 5 منتجات</small>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <tbody>
+                        @if (mostSold.Any())
+                        {
+                            @foreach (var p in mostSold)
+                            {
+                                <tr>
+                                    <td style="border: none; padding: 0.75rem 0.5rem;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="stat-icon stat-warning" style="width: 32px; height: 32px; font-size: 0.75rem;">
+                                                <i class="fa-solid fa-box"></i>
+                                            </div>
+                                            <span style="font-weight: 500;">@p.ProductName</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end" style="border: none; padding: 0.75rem 0.5rem;">
+                                        <span class="badge-soft badge-soft-success">@p.TotalQuantitySold قطعة</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center text-muted py-4" style="border: none;">
+                                    لا توجد بيانات مبيعات
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="300">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-clock-rotate-left" style="color: var(--text-secondary);"></i> سجل العمليات الأخيرة</h5>
+        <span class="table-badge">@recentActivities.Count عملية</span>
+    </div>
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>النوع</th>
+                    <th>الوصف</th>
+                    <th>التاريخ</th>
+                    <th>القيمة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (recentActivities.Any())
+                {
+                    @foreach (var act in recentActivities)
+                    {
+                        <tr>
+                            <td>
+                                @if (act.Type == "Sale")
+                                {
+                                    <span class="badge-soft badge-soft-success">
+                                        <i class="fa-solid fa-arrow-up"></i> بيع
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-soft badge-soft-info">
+                                        <i class="fa-solid fa-arrow-down"></i> شراء
+                                    </span>
+                                }
+                            </td>
+                            <td>@act.Description</td>
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="fa-regular fa-clock me-1"></i>
+                                    @act.Date.ToString("yyyy-MM-dd HH:mm")
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    @act.Amount.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-clock"></i>
+                                <h5>لا يوجد نشاط</h5>
+                                <p>لم يتم تسجيل أي عمليات بعد</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('financeChart').getContext('2d');
+
+        const gradient1 = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient1.addColorStop(0, 'rgba(26, 93, 26, 0.9)');
+        gradient1.addColorStop(1, 'rgba(26, 93, 26, 0.4)');
+
+        const gradient2 = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient2.addColorStop(0, 'rgba(184, 134, 11, 0.9)');
+        gradient2.addColorStop(1, 'rgba(184, 134, 11, 0.4)');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['المشتريات', 'المبيعات'],
+                datasets: [{
+                    label: 'إجمالي القيمة',
+                    data: [@Model.TotalPurchasesAmount, @Model.TotalSalesAmount],
+                    backgroundColor: [gradient1, gradient2],
+                    borderRadius: 12,
+                    borderSkipped: false,
+                    barThickness: 80
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#1e293b',
+                        bodyColor: '#1e293b',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 10,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('ar-EG').format(context.parsed.y) + ' ج.م';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9', drawBorder: false },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { family: 'Cairo', size: 11 },
+                            callback: function(value) {
+                                return new Intl.NumberFormat('ar-EG', { notation: 'compact' }).format(value);
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#475569',
+                            font: { family: 'Cairo', size: 12, weight: '600' }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

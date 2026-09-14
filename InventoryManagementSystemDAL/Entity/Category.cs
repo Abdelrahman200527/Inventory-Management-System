@@ -11,7 +11,7 @@ namespace InventoryManagementSystemDAL.Entity
     {
         [Required(ErrorMessage = "Category Name is required")]
         public string CategoryName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; } 
 
         // Relationships
         public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();

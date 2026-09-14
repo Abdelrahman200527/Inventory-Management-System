@@ -1,0 +1,270 @@
+@model ProductIndexViewModel
+@{
+    ViewData["Title"] = "المنتجات";
+
+    // ✅ حساب الإحصائيات من الصفحة الحالية فقط (بدون تعديل ViewModel)
+    var currentItems = Model.Products.Items.ToList();
+    var lowStockCount = currentItems.Count(p => p.IsLowStock && p.StockQuantity > 0);
+    var outOfStockCount = currentItems.Count(p => p.StockQuantity == 0);
+    var totalQty = currentItems.Sum(p => p.StockQuantity);
+    var totalValue = currentItems.Sum(p => p.StockQuantity * p.UnitPrice);
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <div>
+                <h1 class="page-title">دليل المنتجات</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    إدارة المنتجات والأصناف والمخزون
+                </p>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-light" id="refreshBtn">
+                <i class="fa-solid fa-rotate"></i> تحديث
+            </button>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i> إضافة منتج جديد
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card stat-primary">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-check"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المنتجات</p>
+            <h3 class="stat-value">@Model.Products.TotalCount</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card stat-danger">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <span class="stat-trend down">
+                    <i class="fa-solid fa-exclamation"></i> تنبيه
+                </span>
+            </div>
+            <p class="stat-label">منتجات منخفضة المخزون</p>
+            <h3 class="stat-value">@(lowStockCount + outOfStockCount)</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card stat-info">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-info">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <span class="stat-trend neutral">
+                    <i class="fa-solid fa-layer-group"></i> المخزون
+                </span>
+            </div>
+            <p class="stat-label">إجمالي الكمية (الصفحة)</p>
+            <h3 class="stat-value">@totalQty</h3>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card stat-gold">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-gold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-arrow-up"></i> قيمة
+                </span>
+            </div>
+            <p class="stat-label">قيمة المخزون (الصفحة)</p>
+            <h3 class="stat-value">@totalValue.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar" data-aos="fade-up" data-aos-delay="100">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <div class="filter-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="بحث بالاسم أو الكود (SKU)..." />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="filter-group">
+                <i class="fa-solid fa-tag"></i>
+                <select name="categoryId">
+                    <option value="">-- كل الأقسام --</option>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">@c.CategoryName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">
+                <i class="fa-solid fa-filter"></i> تصفية
+            </button>
+            <a asp-action="Index" class="btn btn-light" title="إعادة تعيين">
+                <i class="fa-solid fa-rotate-left"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="200">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-list" style="color: var(--primary);"></i> قائمة المنتجات</h5>
+        <span class="table-badge">@Model.Products.TotalCount منتج</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>كود الصنف (SKU)</th>
+                    <th>اسم المنتج</th>
+                    <th>القسم</th>
+                    <th>سعر الوحدة</th>
+                    <th>الكمية بالمخزن</th>
+                    <th>الحالة</th>
+                    <th class="text-center">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Products.Items.Any())
+                {
+                    @foreach (var item in Model.Products.Items)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-soft badge-soft-info">
+                                    <i class="fa-solid fa-barcode"></i>
+                                    @item.SKU
+                                </span>
+                            </td>
+                            <td style="font-weight: 600;">@item.ProductName</td>
+                            <td>
+                                <span class="badge-soft badge-soft-gold">
+                                    <i class="fa-solid fa-tag"></i>
+                                    @item.CategoryName
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    @item.UnitPrice.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                            <td>
+                                <strong>@item.StockQuantity</strong>
+                            </td>
+                            <td>
+                                @if (item.StockQuantity == 0)
+                                {
+                                    <span class="badge-soft badge-soft-danger">
+                                        <i class="fa-solid fa-circle-xmark"></i> نفذ المخزون
+                                    </span>
+                                }
+                                else if (item.IsLowStock)
+                                {
+                                    <span class="badge-soft badge-soft-warning">
+                                        <i class="fa-solid fa-triangle-exclamation"></i> مخزون منخفض
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-soft badge-soft-success">
+                                        <i class="fa-solid fa-circle-check"></i> متوفر
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="action-btns">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="تعديل">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-action-view" title="عرض">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="حذف">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <h5>لا توجد منتجات</h5>
+                                <p>ابدأ بإضافة منتج جديد للمخزون</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.Products.TotalPages > 1)
+    {
+        <div class="pagination-wrapper">
+            <span class="pagination-info">
+                صفحة @Model.Products.PageNumber من @Model.Products.TotalPages — إجمالي @Model.Products.TotalCount منتج
+            </span>
+            <div class="pagination-custom">
+                @if (Model.Products.PageNumber > 1)
+                {
+                    <a asp-action="Index" asp-route-page="@(Model.Products.PageNumber - 1)" asp-route-searchTerm="@Model.SearchTerm" asp-route-categoryId="@Model.CategoryId">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                }
+                @for (int i = 1; i <= Model.Products.TotalPages; i++)
+                {
+                    <a asp-action="Index" asp-route-page="@i" asp-route-searchTerm="@Model.SearchTerm" asp-route-categoryId="@Model.CategoryId"
+                       class="@(i == Model.Products.PageNumber ? "active" : "")">@i</a>
+                }
+                @if (Model.Products.PageNumber < Model.Products.TotalPages)
+                {
+                    <a asp-action="Index" asp-route-page="@(Model.Products.PageNumber + 1)" asp-route-searchTerm="@Model.SearchTerm" asp-route-categoryId="@Model.CategoryId">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('refreshBtn')?.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            icon.classList.add('fa-spin');
+            setTimeout(() => location.reload(), 300);
+        });
+    </script>
+}

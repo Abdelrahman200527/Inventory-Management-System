@@ -1,4 +1,9 @@
+﻿using InventoryManagementSystemBLL.Mapping;
+using InventoryManagementSystemBLL.Services.Classes;
+using InventoryManagementSystemBLL.Services.Interfaces;
 using InventoryManagementSystemDAL.DBContext;
+using InventoryManagementSystemDAL.Helper;
+using InventoryManagementSystemBLL.Helper;
 using InventoryManagementSystemDAL.Repo;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +15,12 @@ namespace InventoryManagementSystemPL
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<InventoryDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+          builder.Services.DAL(builder.Configuration).BLL();
 
+           
+          
+            builder.Services.AddHttpClient<IAiChatService, GeminiChatService>();
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             builder.Services.AddControllersWithViews();
 
@@ -33,7 +39,10 @@ namespace InventoryManagementSystemPL
 
             app.MapStaticAssets();
 
-            app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}")
+                .WithStaticAssets();
 
             app.Run();
         }

@@ -1,0 +1,186 @@
+@model PurchaseCreateDto
+@{
+    ViewData["Title"] = "إنشاء فاتورة شراء";
+    var suppliers = ViewBag.Suppliers as IEnumerable<SupplierResponseDto> ?? new List<SupplierResponseDto>();
+    var products = ViewBag.Products as IEnumerable<ProductResponseDto> ?? new List<ProductResponseDto>();
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); box-shadow: 0 8px 20px rgba(26, 93, 26, 0.3);">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تسجيل فاتورة شراء جديدة</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    اختر المورد وأضف الأصناف المشتراة
+                </p>
+            </div>
+        </div>
+        <a asp-action="Index" class="btn btn-light">
+            <i class="fa-solid fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<div class="form-card" data-aos="fade-up">
+    <div class="form-card-header">
+        <div class="page-icon" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">
+            <i class="fa-solid fa-cart-flatbed"></i>
+        </div>
+        <div>
+            <h4>بيانات الفاتورة</h4>
+            <p>جميع الحقول المعلمة بـ <span class="text-danger">*</span> مطلوبة</p>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="purchaseForm">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <!-- Supplier Selection -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="SupplierId" class="form-label">
+                    <i class="fa-solid fa-truck me-1" style="color: var(--primary);"></i>
+                    المورد <span class="text-danger">*</span>
+                </label>
+                <select asp-for="SupplierId" class="form-select" required>
+                    <option value="">-- اختر المورد --</option>
+                    @foreach (var s in suppliers)
+                    {
+                        <option value="@s.Id">@s.SupplierName</option>
+                    }
+                </select>
+                <span asp-validation-for="SupplierId" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <!-- Items Header -->
+        <h6 class="fw-bold mb-3 mt-4" style="color: var(--text-primary);">
+            <i class="fa-solid fa-boxes-stacked me-2" style="color: var(--primary);"></i>
+            أصناف الفاتورة
+        </h6>
+
+        <!-- Items Table -->
+        <div class="table-responsive mb-3">
+            <table class="table table-custom" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th width="150">الكمية</th>
+                        <th width="180">سعر تكلفة الوحدة</th>
+                        <th width="180">الإجمالي</th>
+                        <th width="80"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="item-row">
+                        <td>
+                            <select name="Items[0].ProductId" class="form-select product-select" required>
+                                <option value="">-- اختر المنتج --</option>
+                                @foreach (var p in products)
+                                {
+                                    <option value="@p.Id" data-price="@p.UnitPrice">@p.ProductName (@p.SKU)</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="Items[0].Quantity" class="form-control qty-input" min="1" value="1" required />
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" name="Items[0].UnitCost" class="form-control cost-input" min="0" value="0" required />
+                        </td>
+                        <td>
+                            <span class="line-total fw-bold" style="color: var(--primary);">0.00</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn-action btn-action-delete remove-row" title="حذف">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Row + Grand Total -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <button type="button" class="btn btn-outline-primary" id="addRow">
+                <i class="fa-solid fa-plus"></i> إضافة صنف آخر
+            </button>
+            <div class="mini-stat" style="min-width: 250px; padding: 1rem 1.25rem;">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <small class="text-muted d-block">إجمالي الفاتورة</small>
+                    <strong style="font-size: 1.5rem; color: var(--primary);">
+                        <span id="grandTotal">0.00</span> ج.م
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-between gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+            <a asp-action="Index" class="btn btn-light">
+                <i class="fa-solid fa-xmark"></i> إلغاء
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> حفظ وترحيل المخزون
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let rowIdx = 1;
+
+        function recalc() {
+            let grand = 0;
+            document.querySelectorAll('#itemsTable .item-row').forEach(row => {
+                const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+                const cost = parseFloat(row.querySelector('.cost-input').value) || 0;
+                const total = qty * cost;
+                row.querySelector('.line-total').innerText = total.toFixed(2);
+                grand += total;
+            });
+            document.getElementById('grandTotal').innerText = grand.toFixed(2);
+        }
+
+        document.getElementById('addRow').addEventListener('click', () => {
+            const tbody = document.querySelector('#itemsTable tbody');
+            const firstRow = document.querySelector('#itemsTable .item-row');
+            const newRow = firstRow.cloneNode(true);
+            newRow.querySelector('.product-select').name = `Items[${rowIdx}].ProductId`;
+            newRow.querySelector('.product-select').value = '';
+            newRow.querySelector('.qty-input').name = `Items[${rowIdx}].Quantity`;
+            newRow.querySelector('.qty-input').value = 1;
+            newRow.querySelector('.cost-input').name = `Items[${rowIdx}].UnitCost`;
+            newRow.querySelector('.cost-input').value = 0;
+            newRow.querySelector('.line-total').innerText = "0.00";
+            tbody.appendChild(newRow);
+            rowIdx++;
+            attachEvents(newRow);
+            recalc();
+        });
+
+        function attachEvents(row) {
+            row.querySelector('.qty-input')?.addEventListener('input', recalc);
+            row.querySelector('.cost-input')?.addEventListener('input', recalc);
+            row.querySelector('.remove-row')?.addEventListener('click', () => {
+                if (document.querySelectorAll('#itemsTable .item-row').length > 1) {
+                    row.remove();
+                    recalc();
+                }
+            });
+        }
+
+        document.querySelectorAll('#itemsTable .item-row').forEach(attachEvents);
+        recalc();
+    </script>
+}

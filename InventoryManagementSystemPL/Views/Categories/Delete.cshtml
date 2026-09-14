@@ -1,0 +1,83 @@
+@model CategoryResponseDto
+@{
+    ViewData["Title"] = "تأكيد حذف قسم";
+    var canDelete = Model.ProductCount == 0;
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--danger), #dc2626); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تأكيد الحذف</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    لا يمكن التراجع عن هذه العملية
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="form-card" data-aos="fade-up" style="border: 2px solid rgba(239, 68, 68, 0.3);">
+            <div class="form-card-header" style="border-bottom-color: rgba(239, 68, 68, 0.2);">
+                <div class="page-icon" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                <div>
+                    <h4 style="color: var(--danger);">حذف القسم</h4>
+                    <p>هل أنت متأكد من حذف هذا القسم؟</p>
+                </div>
+            </div>
+
+            @if (canDelete)
+            {
+                <div class="alert alert-danger mb-4">
+                    <i class="fa-solid fa-circle-exclamation fs-5"></i>
+                    <div>
+                        <strong>تنبيه:</strong> سيتم حذف القسم نهائياً ولا يمكن استرجاعه.
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning mb-4">
+                    <i class="fa-solid fa-ban fs-5"></i>
+                    <div>
+                        <strong>لا يمكن الحذف:</strong> هذا القسم يحتوي على <strong>@Model.ProductCount منتج</strong>.
+                        يجب نقل المنتجات أو حذفها أولاً.
+                    </div>
+                </div>
+            }
+
+            <div class="mini-stat mb-4">
+                <div class="stat-icon stat-danger">
+                    <i class="fa-solid fa-tag"></i>
+                </div>
+                <div>
+                    <strong>@Model.CategoryName</strong>
+                    <small class="text-muted d-block">
+                        @Model.ProductCount منتج مرتبط
+                    </small>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-between gap-2">
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fa-solid fa-xmark"></i> إلغاء
+                    </a>
+                    <button type="submit" class="btn btn-danger" @(canDelete ? "" : "disabled")>
+                        <i class="fa-solid fa-trash"></i> تأكيد الحذف
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

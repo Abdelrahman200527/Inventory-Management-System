@@ -1,0 +1,94 @@
+@model SupplierCreateDto
+@{
+    ViewData["Title"] = "إضافة مورد جديد";
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--info), #4299e1); box-shadow: 0 8px 20px rgba(44, 82, 130, 0.3);">
+                <i class="fa-solid fa-truck"></i>
+            </div>
+            <div>
+                <h1 class="page-title">إضافة مورد جديد</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    أدخل بيانات المورد لإضافته إلى النظام
+                </p>
+            </div>
+        </div>
+        <a asp-action="Index" class="btn btn-light">
+            <i class="fa-solid fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="form-card" data-aos="fade-up">
+            <div class="form-card-header">
+                <div class="page-icon" style="background: linear-gradient(135deg, var(--info), #4299e1);">
+                    <i class="fa-solid fa-truck"></i>
+                </div>
+                <div>
+                    <h4>بيانات المورد</h4>
+                    <p>جميع الحقول المعلمة بـ <span class="text-danger">*</span> مطلوبة</p>
+                </div>
+            </div>
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label asp-for="SupplierName" class="form-label">
+                            اسم المورد / الشركة <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="SupplierName" class="form-control" placeholder="أدخل اسم المورد" required />
+                        <span asp-validation-for="SupplierName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ContactName" class="form-label">الشخص المسؤول</label>
+                        <input asp-for="ContactName" class="form-control" placeholder="اختياري" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Phone" class="form-label">
+                            رقم الهاتف <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Phone" class="form-control" placeholder="01xxxxxxxxx" required />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">
+                            البريد الإلكتروني <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="email@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Address" class="form-label">العنوان</label>
+                        <input asp-for="Address" class="form-control" placeholder="اختياري" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fa-solid fa-xmark"></i> إلغاء
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> حفظ المورد
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

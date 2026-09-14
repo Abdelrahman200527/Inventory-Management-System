@@ -1,0 +1,227 @@
+@model SaleCreateDto
+@{
+    ViewData["Title"] = "إنشاء فاتورة بيع";
+    var products = ViewBag.Products as IEnumerable<ProductResponseDto> ?? new List<ProductResponseDto>();
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                <i class="fa-solid fa-cart-plus"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تسجيل فاتورة بيع جديدة</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    اختر الأصناف وأتمم عملية البيع
+                </p>
+            </div>
+        </div>
+        <a asp-action="Index" class="btn btn-light">
+            <i class="fa-solid fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<div class="form-card" data-aos="fade-up">
+    <div class="form-card-header">
+        <div class="page-icon" style="background: linear-gradient(135deg, var(--success), #059669);">
+            <i class="fa-solid fa-cash-register"></i>
+        </div>
+        <div>
+            <h4>بيانات الفاتورة</h4>
+            <p>املأ بيانات العميل (اختياري) وأضف الأصناف المبيعة</p>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" id="saleForm">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <!-- Customer Info -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label asp-for="CustomerInfo" class="form-label">
+                    <i class="fa-solid fa-user me-1" style="color: var(--success);"></i>
+                    بيانات العميل
+                    <small class="text-muted">(اختياري)</small>
+                </label>
+                <input asp-for="CustomerInfo" class="form-control" placeholder="اسم العميل أو رقم الهاتف..." />
+                <span asp-validation-for="CustomerInfo" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <!-- Items Header -->
+        <h6 class="fw-bold mb-3 mt-4" style="color: var(--text-primary);">
+            <i class="fa-solid fa-boxes-stacked me-2" style="color: var(--success);"></i>
+            أصناف الفاتورة
+        </h6>
+
+        <!-- Items Table -->
+        <div class="table-responsive mb-3">
+            <table class="table table-custom" id="saleItemsTable">
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th width="150">الكمية</th>
+                        <th width="150">السعر الحالي</th>
+                        <th width="150">الإجمالي</th>
+                        <th width="80"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="item-row">
+                        <td>
+                            <select name="Items[0].ProductId" class="form-select product-select" required>
+                                <option value="">-- اختر المنتج --</option>
+                                @foreach (var p in products)
+                                {
+                                    <option value="@p.Id" data-price="@p.UnitPrice" data-stock="@p.StockQuantity">
+                                        @p.ProductName (@p.SKU) - متوفر: @p.StockQuantity
+                                    </option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="Items[0].Quantity" class="form-control qty-input" min="1" value="1" required />
+                        </td>
+                        <td>
+                            <span class="unit-price text-muted fw-bold">0.00</span>
+                        </td>
+                        <td>
+                            <span class="line-total fw-bold" style="color: var(--success);">0.00</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn-action btn-action-delete remove-row" title="حذف">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Row + Grand Total -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <button type="button" class="btn btn-outline-primary" id="addRow">
+                <i class="fa-solid fa-plus"></i> إضافة صنف آخر
+            </button>
+            <div class="mini-stat" style="min-width: 250px; padding: 1rem 1.25rem;">
+                <div class="stat-icon stat-success">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <small class="text-muted d-block">إجمالي الفاتورة</small>
+                    <strong style="font-size: 1.5rem; color: var(--success);">
+                        <span id="grandTotal">0.00</span> ج.م
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex justify-content-between gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+            <a asp-action="Index" class="btn btn-light">
+                <i class="fa-solid fa-xmark"></i> إلغاء
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="fa-solid fa-check"></i> إتمام البيع وخصم المخزون
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let rowIdx = 1;
+
+        function recalc() {
+            let grand = 0;
+            let hasStockError = false;
+
+            document.querySelectorAll('#saleItemsTable .item-row').forEach(row => {
+                const sel = row.querySelector('.product-select');
+                const opt = sel.options[sel.selectedIndex];
+                const price = opt ? (parseFloat(opt.dataset.price) || 0) : 0;
+                const stock = opt ? (parseInt(opt.dataset.stock) || 0) : 0;
+                const qtyInput = row.querySelector('.qty-input');
+                const qty = parseFloat(qtyInput.value) || 0;
+
+                // ✅ تحذير بصري لو الكمية أكبر من المتوفر
+                if (opt && opt.value && qty > stock) {
+                    qtyInput.style.borderColor = 'var(--danger)';
+                    qtyInput.style.boxShadow = '0 0 0 4px rgba(239, 68, 68, 0.15)';
+                    qtyInput.title = `الكمية المتوفرة: ${stock} فقط`;
+                    hasStockError = true;
+                } else {
+                    qtyInput.style.borderColor = '';
+                    qtyInput.style.boxShadow = '';
+                    qtyInput.title = '';
+                }
+
+                row.querySelector('.unit-price').innerText = price.toFixed(2);
+                const total = qty * price;
+                row.querySelector('.line-total').innerText = total.toFixed(2);
+                grand += total;
+            });
+
+            document.getElementById('grandTotal').innerText = grand.toFixed(2);
+        }
+
+        document.getElementById('addRow').addEventListener('click', () => {
+            const tbody = document.querySelector('#saleItemsTable tbody');
+            const firstRow = document.querySelector('#saleItemsTable .item-row');
+            const newRow = firstRow.cloneNode(true);
+            newRow.querySelector('.product-select').name = `Items[${rowIdx}].ProductId`;
+            newRow.querySelector('.product-select').value = '';
+            newRow.querySelector('.qty-input').name = `Items[${rowIdx}].Quantity`;
+            newRow.querySelector('.qty-input').value = 1;
+            newRow.querySelector('.unit-price').innerText = "0.00";
+            newRow.querySelector('.line-total').innerText = "0.00";
+            tbody.appendChild(newRow);
+            rowIdx++;
+            attachEvents(newRow);
+            recalc();
+        });
+
+        function attachEvents(row) {
+            row.querySelector('.product-select')?.addEventListener('change', recalc);
+            row.querySelector('.qty-input')?.addEventListener('input', recalc);
+            row.querySelector('.remove-row')?.addEventListener('click', () => {
+                if (document.querySelectorAll('#saleItemsTable .item-row').length > 1) {
+                    row.remove();
+                    recalc();
+                }
+            });
+        }
+
+        // ✅ منع إرسال الفورم لو فيه كمية أكبر من المتوفر
+        document.getElementById('saleForm')?.addEventListener('submit', function (e) {
+            let hasStockError = false;
+            let errorMessage = '';
+
+            document.querySelectorAll('#saleItemsTable .item-row').forEach(row => {
+                const sel = row.querySelector('.product-select');
+                const opt = sel.options[sel.selectedIndex];
+                if (!opt || !opt.value) return;
+
+                const stock = parseInt(opt.dataset.stock) || 0;
+                const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+
+                if (qty > stock) {
+                    hasStockError = true;
+                    errorMessage += `• ${opt.text}: متوفر ${stock} فقط، والمطلوب ${qty}\n`;
+                }
+            });
+
+            if (hasStockError) {
+                e.preventDefault();
+                alert('لا يمكن إتمام البيع:\n\n' + errorMessage);
+            }
+        });
+
+        document.querySelectorAll('#saleItemsTable .item-row').forEach(attachEvents);
+        recalc();
+    </script>
+}

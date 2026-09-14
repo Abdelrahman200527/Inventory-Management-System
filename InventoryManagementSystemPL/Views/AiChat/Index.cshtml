@@ -1,0 +1,347 @@
+@{
+    ViewData["Title"] = "المساعد الذكي";
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+                <h1 class="page-title">المساعد الذكي</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    مستشار ذكي مدعوم بـ Gemini AI، مربوط بقاعدة بيانات المخزون
+                </p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="ai-status-badge">
+                <span class="ai-status-dot"></span>
+                متصل ونشط
+            </span>
+            <button class="btn btn-light" id="clearChatBtn" title="محادثة جديدة">
+                <i class="fa-solid fa-rotate-left"></i> محادثة جديدة
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Container -->
+<div class="ai-chat-wrapper" data-aos="fade-up">
+
+    <!-- Sidebar - Quick Prompts -->
+    <aside class="ai-chat-sidebar">
+        <div class="ai-sidebar-header">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>أسئلة مقترحة</span>
+        </div>
+        <div class="ai-sidebar-prompts">
+            <button class="ai-sidebar-prompt" data-prompt="ما هي المنتجات التي اقتربت كمياتها من النفاد؟">
+                <div class="ai-prompt-icon ai-prompt-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>المنتجات منخفضة المخزون</strong>
+                    <small>اعرف إيه اللي قرب يخلص</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="قدم لي نصائح عملية لزيادة المبيعات وتحسين دوران المخزون.">
+                <div class="ai-prompt-icon ai-prompt-success">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>نصائح لزيادة الأرباح</strong>
+                    <small>حسّن مبيعاتك ودوران المخزون</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="كيف أحسب نقطة إعادة الطلب المناسبة لكل منتج؟">
+                <div class="ai-prompt-icon ai-prompt-info">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>حساب نقطة إعادة الطلب</strong>
+                    <small>أفضل وقت لإعادة التموين</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="حلل لي بيانات المخزون الحالية وقدم تقرير مختصر.">
+                <div class="ai-prompt-icon ai-prompt-gold">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>تحليل بيانات المخزون</strong>
+                    <small>تقرير شامل عن حالتك</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="ما هي أفضل الممارسات لتقليل الهالك في المخزون؟">
+                <div class="ai-prompt-icon ai-prompt-danger">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>تقليل الهالك</strong>
+                    <small>نصائح لتقليل الخسائر</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="اقترح لي استراتيجية تسعير للمنتجات لتحقيق أقصى ربح.">
+                <div class="ai-prompt-icon ai-prompt-primary">
+                    <i class="fa-solid fa-money-bill-trend-up"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>استراتيجية التسعير</strong>
+                    <small>حقق أقصى ربح ممكن</small>
+                </div>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <div class="ai-chat-main">
+
+        <!-- Messages -->
+        <div id="pageMessages" class="ai-chat-messages">
+            <!-- Welcome Message -->
+            <div class="ai-message ai-message-bot">
+                <div class="ai-avatar ai-avatar-bot">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="ai-bubble ai-bubble-bot">
+                    <div class="ai-bubble-header">
+                        <strong>المساعد الذكي</strong>
+                        <span class="ai-time">الآن</span>
+                    </div>
+                    <div class="ai-bubble-content">
+                        أهلاً بك! 👋<br>
+                        أنا مساعدك الذكي المتخصص في إدارة المخزون وسلاسل التوريد. تم ربطي بقاعدة بيانات نظامك، وبإمكاني:
+                        <ul style="margin-top: 0.5rem; margin-bottom: 0; padding-right: 1.25rem;">
+                            <li>تحليل كميات المخزون لديك</li>
+                            <li>تنبيهك للنواقص والمنتجات منخفضة المخزون</li>
+                            <li>مساعدتك في اتخاذ قرارات الشراء والبيع</li>
+                            <li>تقديم نصائح لتحسين الأداء وزيادة الأرباح</li>
+                        </ul>
+                        <br>
+                        اسألني أي حاجة! 🚀
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="ai-chat-input-wrapper">
+            <div class="ai-chat-input-box">
+                <textarea id="pageChatInput"
+                          class="ai-chat-input"
+                          placeholder="اكتب سؤالك أو استفسارك هنا..."
+                          rows="1"></textarea>
+                <button class="ai-chat-send-btn" id="pageSendBtn" title="إرسال">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="ai-chat-footer">
+                <span><i class="fa-solid fa-info-circle"></i> المساعد الذكي قد يرتكب أخطاء. راجع المعلومات المهمة.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const pMessages = document.getElementById('pageMessages');
+        const pInput = document.getElementById('pageChatInput');
+        const pSend = document.getElementById('pageSendBtn');
+        const clearBtn = document.getElementById('clearChatBtn');
+
+        // Auto-resize textarea
+        pInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+
+        // Prompt chips
+        document.querySelectorAll('.ai-sidebar-prompt').forEach(btn => {
+            btn.addEventListener('click', () => {
+                pInput.value = btn.getAttribute('data-prompt');
+                pInput.style.height = 'auto';
+                pInput.style.height = Math.min(pInput.scrollHeight, 150) + 'px';
+                sendMsg();
+            });
+        });
+
+        // Clear chat
+        clearBtn?.addEventListener('click', () => {
+            pMessages.innerHTML = `
+                <div class="ai-message ai-message-bot">
+                    <div class="ai-avatar ai-avatar-bot">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="ai-bubble ai-bubble-bot">
+                        <div class="ai-bubble-header">
+                            <strong>المساعد الذكي</strong>
+                            <span class="ai-time">الآن</span>
+                        </div>
+                        <div class="ai-bubble-content">
+                            تم بدء محادثة جديدة. اسألني أي حاجة! 🚀
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Format AI reply (markdown-lite)
+        function formatReply(text) {
+            if (!text) return '';
+            let html = escapeHtml(text);
+
+            // Bold
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Inline code
+            html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+
+            // Lists
+            html = html.replace(/^\s*[\-\*]\s+(.+)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+
+            // Line breaks
+            html = html.replace(/\n/g, '<br>');
+
+            return html;
+        }
+
+        // Get current time
+        function now() {
+            const d = new Date();
+            return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+        }
+
+        // Send message
+        async function sendMsg() {
+            const text = pInput.value.trim();
+            if (!text) return;
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'ai-message ai-message-user';
+            userMsg.innerHTML = `
+                <div class="ai-avatar ai-avatar-user">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="ai-bubble ai-bubble-user">
+                    <div class="ai-bubble-header">
+                        <strong>أنت</strong>
+                        <span class="ai-time">${now()}</span>
+                    </div>
+                    <div class="ai-bubble-content">${escapeHtml(text)}</div>
+                </div>
+            `;
+            pMessages.appendChild(userMsg);
+
+            pInput.value = '';
+            pInput.style.height = 'auto';
+            pMessages.scrollTop = pMessages.scrollHeight;
+
+            // Add loading indicator
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'ai-message ai-message-bot';
+            loadingMsg.id = 'aiLoading';
+            loadingMsg.innerHTML = `
+                <div class="ai-avatar ai-avatar-bot">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="ai-bubble ai-bubble-bot">
+                    <div class="ai-bubble-header">
+                        <strong>المساعد الذكي</strong>
+                        <span class="ai-time">${now()}</span>
+                    </div>
+                    <div class="ai-bubble-content">
+                        <div class="ai-typing">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            pMessages.appendChild(loadingMsg);
+            pMessages.scrollTop = pMessages.scrollHeight;
+
+            try {
+                const res = await fetch('/AiChat/Ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const d = await res.json();
+
+                document.getElementById('aiLoading')?.remove();
+
+                const botMsg = document.createElement('div');
+                botMsg.className = 'ai-message ai-message-bot';
+
+                const replyText = d.success ? (d.reply || 'لم يتم استلام رد.') : (d.message || 'حدث خطأ.');
+
+                botMsg.innerHTML = `
+                    <div class="ai-avatar ai-avatar-bot">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="ai-bubble ai-bubble-bot">
+                        <div class="ai-bubble-header">
+                            <strong>المساعد الذكي</strong>
+                            <span class="ai-time">${now()}</span>
+                        </div>
+                        <div class="ai-bubble-content">${formatReply(replyText)}</div>
+                    </div>
+                `;
+                pMessages.appendChild(botMsg);
+
+            } catch (err) {
+                document.getElementById('aiLoading')?.remove();
+
+                const errMsg = document.createElement('div');
+                errMsg.className = 'ai-message ai-message-bot';
+                errMsg.innerHTML = `
+                    <div class="ai-avatar" style="background: rgba(239, 68, 68, 0.1); color: #dc2626;">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <div class="ai-bubble" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2);">
+                        <div class="ai-bubble-header">
+                            <strong style="color: #dc2626;">خطأ</strong>
+                            <span class="ai-time">${now()}</span>
+                        </div>
+                        <div class="ai-bubble-content" style="color: #dc2626;">
+                            تعذر الاتصال بالخادم. حاول مرة أخرى.
+                        </div>
+                    </div>
+                `;
+                pMessages.appendChild(errMsg);
+            }
+
+            pMessages.scrollTop = pMessages.scrollHeight;
+        }
+
+        // Send button
+        pSend.addEventListener('click', sendMsg);
+
+        // Enter to send (Shift+Enter for new line)
+        pInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMsg();
+            }
+        });
+
+        // Scroll to bottom on load
+        pMessages.scrollTop = pMessages.scrollHeight;
+    </script>
+}

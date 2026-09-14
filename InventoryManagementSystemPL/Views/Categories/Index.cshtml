@@ -1,0 +1,164 @@
+@model IEnumerable<CategoryResponseDto>
+@{
+    ViewData["Title"] = "الأقسام";
+    var categoriesList = Model.ToList();
+    var totalProducts = categoriesList.Sum(c => c.ProductCount);
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); box-shadow: 0 8px 20px rgba(184, 134, 11, 0.3);">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+            <div>
+                <h1 class="page-title">دليل الأقسام</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    إدارة أقسام المنتجات والتصنيفات
+                </p>
+            </div>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> إضافة قسم جديد
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card stat-gold">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-gold">
+                    <i class="fa-solid fa-tags"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-check"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي الأقسام</p>
+            <h3 class="stat-value">@categoriesList.Count</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card stat-primary">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-layer-group"></i> منتجات
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المنتجات</p>
+            <h3 class="stat-value">@totalProducts</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card stat-info">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-info">
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <span class="stat-trend neutral">
+                    <i class="fa-solid fa-calculator"></i> متوسط
+                </span>
+            </div>
+            <p class="stat-label">متوسط المنتجات / قسم</p>
+            <h3 class="stat-value">
+                @(categoriesList.Count > 0 ? (totalProducts / categoriesList.Count) : 0)
+            </h3>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="100">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-list" style="color: var(--gold);"></i> قائمة الأقسام</h5>
+        <span class="table-badge">@categoriesList.Count قسم</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>اسم القسم</th>
+                    <th>الوصف</th>
+                    <th>عدد المنتجات</th>
+                    <th class="text-center">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (categoriesList.Any())
+                {
+                    @foreach (var item in categoriesList)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-soft badge-soft-gold">
+                                    #@item.Id
+                                </span>
+                            </td>
+                            <td style="font-weight: 600;">@item.CategoryName</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    <span class="text-muted small">@item.Description</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.ProductCount > 0)
+                                {
+                                    <span class="badge-soft badge-soft-primary">
+                                        <i class="fa-solid fa-box"></i> @item.ProductCount منتج
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-soft badge-soft-info">
+                                        <i class="fa-solid fa-inbox"></i> فارغ
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="action-btns">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="تعديل">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-action-view" title="عرض">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="حذف">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-tags"></i>
+                                <h5>لا توجد أقسام</h5>
+                                <p>ابدأ بإضافة أول قسم للمنتجات</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

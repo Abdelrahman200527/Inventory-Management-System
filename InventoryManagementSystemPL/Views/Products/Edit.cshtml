@@ -1,0 +1,95 @@
+@model ProductUpdateDto
+@{
+    ViewData["Title"] = "تعديل منتج";
+    var categories = ViewBag.Categories as IEnumerable<CategoryResponseDto> ?? new List<CategoryResponseDto>();
+}
+
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--warning), #d97706); box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);">
+                <i class="fa-solid fa-pen"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تعديل بيانات المنتج</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    قم بتحديث بيانات المنتج
+                </p>
+            </div>
+        </div>
+        <a asp-action="Index" class="btn btn-light">
+            <i class="fa-solid fa-arrow-right"></i> العودة للقائمة
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="form-card" data-aos="fade-up">
+            <div class="form-card-header">
+                <div class="page-icon" style="background: linear-gradient(135deg, var(--warning), #d97706);">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div>
+                    <h4>تحديث بيانات المنتج</h4>
+                    <p>عدّل الحقول المطلوبة ثم اضغط حفظ</p>
+                </div>
+            </div>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="SKU" class="form-label">كود الصنف (SKU) <span class="text-danger">*</span></label>
+                        <input asp-for="SKU" class="form-control" required />
+                        <span asp-validation-for="SKU" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ProductName" class="form-label">اسم المنتج <span class="text-danger">*</span></label>
+                        <input asp-for="ProductName" class="form-control" required />
+                        <span asp-validation-for="ProductName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="form-label">القسم <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="form-select" required>
+                            @foreach (var c in categories)
+                            {
+                                <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">@c.CategoryName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="UnitPrice" class="form-label">سعر الوحدة <span class="text-danger">*</span></label>
+                        <input asp-for="UnitPrice" type="number" step="0.01" min="0" class="form-control" required />
+                        <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="LowStockThreshold" class="form-label">حد التنبيه للمخزون <span class="text-danger">*</span></label>
+                        <input asp-for="LowStockThreshold" type="number" min="0" class="form-control" required />
+                        <span asp-validation-for="LowStockThreshold" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
+                    <a asp-action="Index" class="btn btn-light">
+                        <i class="fa-solid fa-xmark"></i> إلغاء
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> حفظ التعديلات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

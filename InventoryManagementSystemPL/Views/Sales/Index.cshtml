@@ -1,0 +1,155 @@
+@model IEnumerable<SaleResponseDto>
+@{
+    ViewData["Title"] = "فواتير المبيعات";
+    var salesList = Model.ToList();
+    var totalAmount = salesList.Sum(s => s.TotalAmount);
+    var thisMonthAmount = salesList
+        .Where(s => s.SaleDate.Month == DateTime.Now.Month && s.SaleDate.Year == DateTime.Now.Year)
+        .Sum(s => s.TotalAmount);
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                <i class="fa-solid fa-cash-register"></i>
+            </div>
+            <div>
+                <h1 class="page-title">فواتير المبيعات</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    إدارة فواتير البيع للعملاء
+                </p>
+            </div>
+        </div>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fa-solid fa-plus"></i> فاتورة بيع جديدة
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card stat-success">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-success">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-check"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي الفواتير</p>
+            <h3 class="stat-value">@salesList.Count</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card stat-gold">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-gold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-arrow-up"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المبيعات</p>
+            <h3 class="stat-value">@totalAmount.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card stat-primary">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <span class="stat-trend neutral">
+                    <i class="fa-solid fa-clock"></i> هذا الشهر
+                </span>
+            </div>
+            <p class="stat-label">مبيعات هذا الشهر</p>
+            <h3 class="stat-value">@thisMonthAmount.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="100">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-list" style="color: var(--success);"></i> قائمة الفواتير</h5>
+        <span class="table-badge">@salesList.Count فاتورة</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>رقم الفاتورة</th>
+                    <th>العميل</th>
+                    <th>تاريخ البيع</th>
+                    <th>إجمالي الفاتورة</th>
+                    <th class="text-center">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (salesList.Any())
+                {
+                    @foreach (var item in salesList)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-soft badge-soft-success">
+                                    <i class="fa-solid fa-hashtag"></i> @item.Id
+                                </span>
+                            </td>
+                            <td style="font-weight: 600;">
+                                @if (string.IsNullOrEmpty(item.CustomerInfo))
+                                {
+                                    <span class="text-muted">عميل نقدي</span>
+                                }
+                                else
+                                {
+                                    @item.CustomerInfo
+                                }
+                            </td>
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="fa-regular fa-calendar me-1"></i>
+                                    @item.SaleDate.ToString("yyyy-MM-dd HH:mm")
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--success);">
+                                    @item.TotalAmount.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                            <td class="text-center">
+                                <div class="action-btns">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-action-view" title="عرض التفاصيل">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <h5>لا توجد فواتير مبيعات</h5>
+                                <p>ابدأ بتسجيل أول فاتورة بيع</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

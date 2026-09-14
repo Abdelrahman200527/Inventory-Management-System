@@ -1,0 +1,121 @@
+@model ProductResponseDto
+@{
+    ViewData["Title"] = "تفاصيل المنتج";
+}
+
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--info), #4299e1); box-shadow: 0 8px 20px rgba(44, 82, 130, 0.3);">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+            <div>
+                <h1 class="page-title">تفاصيل المنتج</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-barcode"></i>
+                    @Model.SKU
+                </p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="fa-solid fa-pen"></i> تعديل
+            </a>
+            <a asp-action="Index" class="btn btn-light">
+                <i class="fa-solid fa-arrow-right"></i> العودة
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="form-card" data-aos="fade-up">
+            <div class="form-card-header">
+                <div class="page-icon" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div>
+                    <h4>@Model.ProductName</h4>
+                    <p>معلومات المنتج الكاملة</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-info">
+                            <i class="fa-solid fa-barcode"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">كود الصنف</small>
+                            <strong>@Model.SKU</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-gold">
+                            <i class="fa-solid fa-tag"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">القسم</small>
+                            <strong>@Model.CategoryName</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-primary">
+                            <i class="fa-solid fa-money-bill"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">سعر الوحدة</small>
+                            <strong style="color: var(--primary);">@Model.UnitPrice.ToString("N2") ج.م</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-success">
+                            <i class="fa-solid fa-cubes"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">الكمية المتوفرة</small>
+                            <strong>@Model.StockQuantity</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-warning">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">حد التنبيه</small>
+                            <strong>@Model.LowStockThreshold</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mini-stat">
+                        <div class="stat-icon stat-gold">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">إجمالي قيمة المخزون</small>
+                            <strong style="color: var(--gold);">
+                                @((Model.UnitPrice * Model.StockQuantity).ToString("N2")) ج.م
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

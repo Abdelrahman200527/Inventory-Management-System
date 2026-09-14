@@ -1,0 +1,146 @@
+@model IEnumerable<PurchaseResponseDto>
+@{
+    ViewData["Title"] = "فواتير المشتريات";
+    var purchasesList = Model.ToList();
+    var totalAmount = purchasesList.Sum(p => p.TotalAmount);
+    var thisMonthAmount = purchasesList
+        .Where(p => p.PurchaseDate.Month == DateTime.Now.Month && p.PurchaseDate.Year == DateTime.Now.Year)
+        .Sum(p => p.TotalAmount);
+}
+
+<!-- Page Header -->
+<div class="page-header" data-aos="fade-down">
+    <div class="page-header-content">
+        <div class="page-title-group">
+            <div class="page-icon" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); box-shadow: 0 8px 20px rgba(26, 93, 26, 0.3);">
+                <i class="fa-solid fa-cart-flatbed"></i>
+            </div>
+            <div>
+                <h1 class="page-title">فواتير المشتريات</h1>
+                <p class="page-subtitle">
+                    <i class="fa-solid fa-circle-info"></i>
+                    إدارة فواتير الشراء من الموردين
+                </p>
+            </div>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> فاتورة شراء جديدة
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-card stat-primary">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-primary">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-check"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي الفواتير</p>
+            <h3 class="stat-value">@purchasesList.Count</h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card stat-gold">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-gold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <span class="stat-trend up">
+                    <i class="fa-solid fa-arrow-up"></i> إجمالي
+                </span>
+            </div>
+            <p class="stat-label">إجمالي المبالغ</p>
+            <h3 class="stat-value">@totalAmount.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card stat-info">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon stat-info">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <span class="stat-trend neutral">
+                    <i class="fa-solid fa-clock"></i> هذا الشهر
+                </span>
+            </div>
+            <p class="stat-label">مشتريات هذا الشهر</p>
+            <h3 class="stat-value">@thisMonthAmount.ToString("N0") <small class="fs-6">ج.م</small></h3>
+        </div>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper" data-aos="fade-up" data-aos-delay="100">
+    <div class="table-header">
+        <h5><i class="fa-solid fa-list" style="color: var(--primary);"></i> قائمة الفواتير</h5>
+        <span class="table-badge">@purchasesList.Count فاتورة</span>
+    </div>
+
+    <div class="table-responsive-wrapper custom-scrollbar">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>رقم الفاتورة</th>
+                    <th>المورد</th>
+                    <th>تاريخ الشراء</th>
+                    <th>إجمالي الفاتورة</th>
+                    <th class="text-center">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (purchasesList.Any())
+                {
+                    @foreach (var item in purchasesList)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge-soft badge-soft-primary">
+                                    <i class="fa-solid fa-hashtag"></i> @item.Id
+                                </span>
+                            </td>
+                            <td style="font-weight: 600;">@item.SupplierName</td>
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="fa-regular fa-calendar me-1"></i>
+                                    @item.PurchaseDate.ToString("yyyy-MM-dd HH:mm")
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    @item.TotalAmount.ToString("N2") ج.م
+                                </strong>
+                            </td>
+                            <td class="text-center">
+                                <div class="action-btns">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-action-view" title="عرض التفاصيل">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <h5>لا توجد فواتير مشتريات</h5>
+                                <p>ابدأ بتسجيل أول فاتورة شراء من الموردين</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
