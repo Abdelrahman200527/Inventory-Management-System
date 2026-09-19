@@ -17,7 +17,7 @@ namespace InventoryManagementSystemBLL.Services.Classes
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
+       
         public async Task<IEnumerable<CategoryResponseDto>> GetAllAsync()
         {
             var categories = await _unitOfWork.Categories.GetAllAsync("Products");

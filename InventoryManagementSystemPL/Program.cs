@@ -15,10 +15,11 @@ namespace InventoryManagementSystemPL
         {
             var builder = WebApplication.CreateBuilder(args);
 
-          builder.Services.DAL(builder.Configuration).BLL();
+          builder.Services.DAL(builder.Configuration).BLL();  // Call All Service in Dal + Bll
 
-           
-          
+
+
+            builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
             builder.Services.AddHttpClient<IAiChatService, GeminiChatService>();
 
 

@@ -49,6 +49,16 @@
                 </div>
             </button>
 
+            <button class="ai-sidebar-prompt" data-prompt="ما هي المنتجات التي نفدت تماماً من المخزون؟">
+                <div class="ai-prompt-icon ai-prompt-danger">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>المنتجات اللي نفدت</strong>
+                    <small>المنتجات اللي كميتها صفر</small>
+                </div>
+            </button>
+
             <button class="ai-sidebar-prompt" data-prompt="قدم لي نصائح عملية لزيادة المبيعات وتحسين دوران المخزون.">
                 <div class="ai-prompt-icon ai-prompt-success">
                     <i class="fa-solid fa-chart-line"></i>
@@ -96,6 +106,16 @@
                 <div class="ai-prompt-text">
                     <strong>استراتيجية التسعير</strong>
                     <small>حقق أقصى ربح ممكن</small>
+                </div>
+            </button>
+
+            <button class="ai-sidebar-prompt" data-prompt="ما هو أكثر منتج مبيعاً عندي؟">
+                <div class="ai-prompt-icon ai-prompt-success">
+                    <i class="fa-solid fa-fire"></i>
+                </div>
+                <div class="ai-prompt-text">
+                    <strong>الأكثر مبيعاً</strong>
+                    <small>أعرف أفضل منتجاتك</small>
                 </div>
             </button>
         </div>
@@ -211,14 +231,29 @@
             // Inline code
             html = html.replace(/`(.+?)`/g, '<code>$1</code>');
 
-            // Lists
-            html = html.replace(/^\s*[\-\*]\s+(.+)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+            // Lists (line by line)
+            const lines = html.split('\n');
+            const result = [];
+            let inList = false;
 
-            // Line breaks
-            html = html.replace(/\n/g, '<br>');
+            for (let line of lines) {
+                if (/^\s*[\-\*]\s+/.test(line)) {
+                    if (!inList) {
+                        result.push('<ul>');
+                        inList = true;
+                    }
+                    result.push('<li>' + line.replace(/^\s*[\-\*]\s+/, '') + '</li>');
+                } else {
+                    if (inList) {
+                        result.push('</ul>');
+                        inList = false;
+                    }
+                    result.push(line);
+                }
+            }
+            if (inList) result.push('</ul>');
 
-            return html;
+            return result.join('<br>').replace(/<\/ul><br>/g, '</ul>');
         }
 
         // Get current time
